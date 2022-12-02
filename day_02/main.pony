@@ -18,10 +18,8 @@ actor Main
           try
             let first = USize.from[U8](line(0)? - 'A')
             let second = USize.from[U8](line(2)? - 'X')
-            (
-              acc._1 + scores(first)?(second)?,
-              acc._2 + scores(first)?((first + second + 2) % 3)?
-            )
+            ( acc._1 + scores(first)?(second)?,
+              acc._2 + scores(first)?((first + second + 2) % 3)? )
           else
             acc
           end
