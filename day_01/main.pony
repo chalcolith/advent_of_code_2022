@@ -2,46 +2,27 @@ use "collections"
 use "files"
 
 actor Main
-  let elf_totals: Array[USize] = Array[USize]
-  var cur_total: USize = 0
-  var max_total: USize = 0
-
   new create(env: Env) =>
     let file = File(FilePath(FileAuth(env.root), "input.txt"))
 
+    let totals = BinaryHeap[USize, MaxHeapPriority[USize]](1000)
+    var cur: USize = 0
+
     for line in FileLines(file) do
       if line.size() == 0 then
-        finish_elf()
+        totals.push(cur)
+        cur = 0
       else
         try
-          cur_total = cur_total + line.usize()?
+          cur = cur + line.usize()?
         end
       end
     end
 
-    finish_elf()
+    totals.push(cur)
 
-    env.out.print("max elf total = " + max_total.string()) // 68427
-
-    let sorted_totals = Sort[Array[USize], USize](elf_totals)
     try
-      let len = sorted_totals.size()
-      let top_three_total =
-        sorted_totals(len - 1)? +
-        sorted_totals(len - 2)? +
-        sorted_totals(len - 3)?
-
-      env.out.print("top three total = " + top_three_total.string()) // 203420
-    else
-      env.err.print("Unable to get top 3")
-    end
-
-  fun ref finish_elf() =>
-    if cur_total > 0 then
-      if cur_total > max_total then
-        max_total = cur_total
-      end
-
-      elf_totals.push(cur_total)
-      cur_total = 0
+      env.out.print("part1 = " + totals.peek()?.string()) // 68467
+      let top_three = totals.pop()? + totals.pop()? + totals.pop()?
+      env.out.print("part2 = " + top_three.string()) // 203420
     end
