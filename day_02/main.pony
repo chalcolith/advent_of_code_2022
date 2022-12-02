@@ -1,4 +1,5 @@
 use "files"
+use "itertools"
 
 actor Main
   new create(env: Env) =>
@@ -8,18 +9,23 @@ actor Main
       [ 7; 2; 6 ]
     ]
 
-    var score_part1: USize = 0
-    var score_part2: USize = 0
-
     let file = File(FilePath(FileAuth(env.root), "input.txt"))
-    for line in FileLines(file) do
-      try
-        let first = USize.from[U8](line(0)? - 'A')
-        let second = USize.from[U8](line(2)? - 'X')
-        score_part1 = score_part1 + scores(first)?(second)?
-        score_part2 = score_part2 + scores(first)?((first + second + 2) % 3)?
-      end
-    end
 
-    env.out.print("part 1 = " + score_part1.string()) // 13005
-    env.out.print("part 2 = " + score_part2.string()) // 11373
+    (let part1, let part2) = Iter[String](FileLines(file))
+      .fold[(USize, USize)](
+        (0, 0),
+        {(acc, line) =>
+          try
+            let first = USize.from[U8](line(0)? - 'A')
+            let second = USize.from[U8](line(2)? - 'X')
+            (
+              acc._1 + scores(first)?(second)?,
+              acc._2 + scores(first)?((first + second + 2) % 3)?
+            )
+          else
+            acc
+          end
+        })
+
+    env.out.print("part 1 = " + part1.string()) // 13005
+    env.out.print("part 2 = " + part2.string()) // 11373
