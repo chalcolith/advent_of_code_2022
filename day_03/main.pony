@@ -21,12 +21,9 @@ actor Main
 
     (let part1, let part2, _, _) = Iter[String](FileLines(file))
       .fold[(USize, USize, Vec[Set[USize]], USize)](
-        (0, 0, vec3, 0), // part1, part2, sacks, n
+        (0, 0, vec3, 0),
         {(acc, line) =>
-          let part1 = acc._1
-          let part2 = acc._2
-          let sacks = acc._3
-          let n = acc._4
+          (let part1, let part2, let sacks, let n) = acc
 
           let chars = Iter[U8](line.values())
           let half1 = Iter[U8](chars.take(line.size() / 2))
