@@ -12,15 +12,14 @@ actor Main
         {(acc, line) =>
           (let first, let second) = self.parse_input(consume line)
 
-          var p1: USize = 0
-          var p2: USize = 0
-
-          if self.contains(first, second) then
-            p1 = 1
-            p2 = 1
-          elseif self.overlaps(first, second) then
-            p2 = 1
-          end
+          (let p1: USize, let p2: USize) =
+            if self.contains(first, second) then
+              (1, 1)
+            elseif self.overlaps(first, second) then
+              (0, 1)
+            else
+              (0, 0)
+            end
           (acc._1 + p1, acc._2 + p2)
         }
       )
